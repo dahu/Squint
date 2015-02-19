@@ -24,6 +24,12 @@ if exists("g:loaded_squint")
 endif
 let g:loaded_squint = 1
 
+" Options: {{{1
+
+if ! exists('g:squint_use_split')
+  let g:squint_use_split = 0
+endif
+
 " Maps: {{{1
 
 nmap <plug>squint_zoom_in [[V][:<c-u>call squint#zoom_in(visualmode(), 1)<cr>
@@ -35,6 +41,10 @@ endif
 
 if !hasmapto('<plug>squint_zoom_in', 'v')
   xmap <unique><silent> <Leader>z <plug>squint_zoom_in
+endif
+
+if !hasmapto('<plug>squint_zoom_out', 'n')
+  nmap <unique><silent> <Leader>Z <plug>squint_zoom_out
 endif
 
 " Teardown: {{{1

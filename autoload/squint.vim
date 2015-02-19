@@ -37,10 +37,13 @@ endfunction
 
 " Library Interface: {{{1
 
+sign define squint text=s> texthl=Search
+
+let s:squints = 0
+
 function! squint#save_pos()
-  if ! exists('b:squint_pos')
-    let b:squint_pos = getpos('.')
-  endif
+  let s:squints += 1
+  exe ':sign place ' . s:squints . ' line=' . (line('.') - 1) . ' name=squint buffer=' . bufnr('%')
 endfunction
 
 function! squint#zoom_in(type, ...)
@@ -62,31 +65,29 @@ function! squint#zoom_in(type, ...)
   endif
 
   call overlay#show(split(@@, "\n")
-        \, {'<leader>Z' : ':call squint#zoom_out()<cr>'}
+        \, {'<plug>squint_zoom_out' : ':call squint#zoom_out()<cr>'}
         \, {'filter'     : 0
         \  , 'use_split' : 0
-        \  , 'name'      : 'Zoomed\ in\ from\ ' . escape(parent_name, ' ')})
+        \  , 'name'      : s:squints . '_Zoomed\ in\ from\ ' . escape(parent_name, ' ')})
 
   let &ft = ft
   let b:zoom_parent = parent
+  let b:squint = s:squints
 
   let &selection = sel_save
   let @@ = reg_save
 endfunction
 
 function! squint#zoom_out()
-  let reg_save = @@
-  let parent   = b:zoom_parent
-  let content  = overlay#select_buffer()
+  if exists('b:zoom_parent')
+    let parent   = b:zoom_parent
+    let squint   = b:squint
+    let content  = overlay#select_buffer()
 
-  if exists('b:squint_pos')
-    call setpos('.', b:squint_pos)
-    unlet b:squint_pos
+    exe 'sign jump '    . squint . ' buffer=' . parent
+    exe 'sign unplace ' . squint . ' buffer=' . parent
+    call append(line('.'), content)
   endif
-
-  call append(line('.') - 1, content)
-
-  let @@ = reg_save
 endfunction
 
 " Teardown:{{{1
