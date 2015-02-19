@@ -79,18 +79,12 @@ function! squint#zoom_out()
   let parent   = b:zoom_parent
   let content  = overlay#select_buffer()
 
-  exe 'buffer ' . parent
-
   if exists('b:squint_pos')
     call setpos('.', b:squint_pos)
     unlet b:squint_pos
   endif
 
-  if line('.') == line('$')
-    call append('.', content)
-  else
-    call append(line('.') - 1, content)
-  endif
+  call append(line('.') - 1, content)
 
   let @@ = reg_save
 endfunction
