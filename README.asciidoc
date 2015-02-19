@@ -7,6 +7,8 @@ TIP: If you like Squint and want to share the W00t!, I'm grateful for
 https://www.gittip.com/bairuidahu/[tips] or
 http://of-vim-and-vigor.blogspot.com/[beverages].
 
+NOTE: Squint depends on https://github.com/dahu/vimple[Vimple]
+
 Use `<leader>z` to zoom the current `[[` to `][` range or visual
 selection into a new scratch buffer of the same `&filetype` as the
 current buffer.
