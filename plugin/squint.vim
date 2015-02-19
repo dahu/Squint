@@ -26,7 +26,7 @@ let g:loaded_squint = 1
 
 " Maps: {{{1
 
-nmap <plug>squint_zoom_in :call squint#save_pos()<cr>[[V][<plug>squint_zoom_in
+nmap <plug>squint_zoom_in [[V][:<c-u>call squint#zoom_in(visualmode(), 1)<cr>
 xmap <plug>squint_zoom_in :<c-u>call squint#zoom_in(visualmode(), 1)<cr>
 
 if !hasmapto('<plug>squint_zoom_in', 'n')
