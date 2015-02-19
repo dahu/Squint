@@ -1,0 +1,23 @@
+*squint.txt*	Focus your attention where it's needed.
+
+
+			VIM REFERENCE MANUAL	by Barry Arthur
+
+
+Help on using squint                                              *squint*
+
+1. Introduction				|squint-intro|
+
+==============================================================================
+ 1. INTRODUCTION                                            *squint-intro*
+
+Squint lets you focus on important work without distractions by zooming in on
+the current function or visual selection.
+
+Use `<leader>z` to zoom the current |[[| to |][| range or visual selection.
+Use `<leader>Z` to zoom back out again.
+
+The `<leader>z` trigger is configurable through `<plug>squint_zoom_in`.
+
+Template From: https://github.com/dahu/Area-41/
+ vim:tw=78:ts=8:ft=help:norl:
