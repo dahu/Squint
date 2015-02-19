@@ -26,19 +26,19 @@ let g:loaded_squint = 1
 
 " Maps: {{{1
 
-nmap <Plug>squint_zoom_in :let b:squint_pos = getpos('.')<cr>[[V][<leader>z
-xmap <Plug>squint_zoom_in :<c-u>call squint#zoom_in(visualmode(), 1)<cr>
+nmap <plug>squint_zoom_in :call squint#save_pos()<cr>[[V][<plug>squint_zoom_in
+xmap <plug>squint_zoom_in :<c-u>call squint#zoom_in(visualmode(), 1)<cr>
 
-if !hasmapto('<Plug>squint_zoom_in', 'n')
-  nmap <unique><silent> <Leader>z <Plug>squint_zoom_in
+if !hasmapto('<plug>squint_zoom_in', 'n')
+  nmap <unique><silent> <Leader>z <plug>squint_zoom_in
 endif
 
-if !hasmapto('<Plug>squint_zoom_in', 'v')
-  xmap <unique><silent> <Leader>z <Plug>squint_zoom_in
+if !hasmapto('<plug>squint_zoom_in', 'v')
+  xmap <unique><silent> <Leader>z <plug>squint_zoom_in
 endif
 
 " Teardown: {{{1
-" reset &cpo back to users setting
+
 let &cpo = s:save_cpo
 
 " Template From: https://github.com/dahu/Area-41/
