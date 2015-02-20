@@ -37,62 +37,67 @@ endfunction
 
 " Library Interface: {{{1
 
-sign define squint text=s> texthl=Search
+sign define squint_first text=s< texthl=Search
+sign define squint_last  text=s> texthl=Search
 
 let s:squints = 0
 
-function! squint#save_pos()
+function! squint#save_pos(first_line, last_line)
   let s:squints += 1
-  exe ':sign place ' . s:squints . ' line=' . (line('.') - 1) . ' name=squint buffer=' . bufnr('%')
+  let squint_number = s:squints
+  exe ':sign place ' . s:squints . ' line=' . a:first_line . ' name=squint_first buffer=' . bufnr('%')
+  let s:squints += 1
+  exe ':sign place ' . s:squints . ' line=' . a:last_line  . ' name=squint_last  buffer=' . bufnr('%')
+  return squint_number
 endfunction
 
-function! squint#zoom_in(type, ...)
+function! squint#zoom_in()
   let sel_save     = &selection
   let &selection   = "inclusive"
   let reg_save     = @@
-  let ft           = &ft
-  let parent       = bufnr('%')
-  let parent_name  = bufname('%')
 
-  call squint#save_pos()
-
-  if a:0
-    silent exe "normal! gvd"
-  elseif a:type == 'line'
-    silent exe "normal! '[V']d"
+  if visualmode() !=# 'V'
+    silent exe "normal! gvVy"
   else
-    silent exe "normal! `[v`]d"
+    silent exe "normal! gvy"
   endif
 
   call squint#show(split(@@, "\n"))
-
-  let &ft = ft
-  let b:zoom_parent = parent
-  let b:squint = s:squints
 
   let &selection = sel_save
   let @@ = reg_save
 endfunction
 
 function! squint#zoom_out()
-  if exists('b:zoom_parent')
-    let parent   = b:zoom_parent
-    let squint   = b:squint
-    let content  = getline(1, '$')
+  if exists('b:squint_parent')
+    let parent  = b:squint_parent
+    let number  = b:squint_number
+    let content = getline(1, '$')
     call squint#close()
 
-    exe 'sign jump '    . squint . ' buffer=' . parent
-    exe 'sign unplace ' . squint . ' buffer=' . parent
-    call append(line('.'), content)
+    exe 'sign jump '    . number . ' buffer=' . parent
+    exe 'sign unplace ' . number . ' buffer=' . parent
+    let line = line('.')
+
+    let number += 1
+    exe 'sign jump '    . number . ' buffer=' . parent
+    exe 'sign unplace ' . number . ' buffer=' . parent
+
+    exe line . ',' . line('.') . 'delete'
+
+    call append(line - 1, content)
   endif
 endfunction
 
 function! squint#show(lines)
-  let parent     = bufnr('%')
-  let parent_alt = bufnr('#')
-  let name       = expand('%:p:t:r')
-  let ext        = expand('%:e')
-  let i          = 1
+  let parent      = bufnr('%')
+  let parent_name = bufname('%')
+  let parent_alt  = bufnr('#')
+  let name        = expand('%:p:t:r')
+  let ext         = expand('%:e')
+  let i           = 1
+  let ft          = &ft
+  let number      = squint#save_pos(getpos("'[")[1], getpos("']")[1])
 
   if exists('g:squint_dir')
     let dir = g:squint_dir
@@ -102,7 +107,7 @@ function! squint#show(lines)
     let prefix     = '.squint_'
   endif
 
-  let newname = dir . '/' . prefix . join([i, s:squints, name, ext], '_')
+  let newname = dir . '/' . prefix . join([i, number, name, ext], '_')
   while !empty(glob(newname))
     let i += 1
     let newname = substitute(newname, '\d\+\ze_\d\+_\f', i, '')
@@ -110,8 +115,10 @@ function! squint#show(lines)
 
   exec 'hide edit ' . newname
   call setline(1, a:lines)
+  let &ft = ft
   let b:squint_parent     = parent
   let b:squint_parent_alt = parent_alt
+  let b:squint_number     = number
 endfunction
 
 function! squint#close()

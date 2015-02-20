@@ -32,8 +32,8 @@ endif
 
 " Maps: {{{1
 
-nmap <plug>squint_zoom_in [[V][:<c-u>call squint#zoom_in(visualmode(), 1)<cr>
-xmap <plug>squint_zoom_in :<c-u>call squint#zoom_in(visualmode(), 1)<cr>
+nmap <plug>squint_zoom_in  [[V][:<c-u>call squint#zoom_in()<cr>
+xmap <plug>squint_zoom_in  :<c-u>call squint#zoom_in()<cr>
 nmap <plug>squint_zoom_out :<c-u>call squint#zoom_out()<cr>
 
 if !hasmapto('<plug>squint_zoom_in', 'n')
