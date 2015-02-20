@@ -62,7 +62,7 @@ function! squint#zoom_in()
     silent exe "normal! gvy"
   endif
 
-  call squint#show(split(@@, "\n"))
+  call squint#show(split(@@, "\n", 1))
 
   let &selection = sel_save
   let @@ = reg_save
@@ -115,6 +115,8 @@ function! squint#show(lines)
 
   exec 'hide edit ' . newname
   call setline(1, a:lines)
+  $ g/^$/delete
+  1
   let &ft = ft
   let b:squint_parent     = parent
   let b:squint_parent_alt = parent_alt
