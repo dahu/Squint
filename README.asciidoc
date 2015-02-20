@@ -7,8 +7,6 @@ TIP: If you like Squint and want to share the W00t!, I'm grateful for
 https://www.gittip.com/bairuidahu/[tips] or
 http://of-vim-and-vigor.blogspot.com/[beverages].
 
-NOTE: Squint depends on https://github.com/dahu/vimple[Vimple]
-
 Use `<leader>z` to zoom the current `[[` to `][` range or visual
 selection into a new scratch buffer of the same `&filetype` as the
 current buffer.
@@ -17,3 +15,11 @@ Use `<leader>Z` to zoom the current buffer contents back out into the
 original buffer.
 
 The `<leader>z` trigger is configurable through `<plug>squint_zoom_in`.
+The `<leader>Z` trigger is configurable through `<plug>squint_zoom_out`.
+
+By default, Squint saves tempfiles in the same directory as the file from
+which you zoomed. If you want to store all of your squints in one directory
+(for easy cleanup, say), add a line like this to your `$MYVIMRC`
+
+  let g:squint_dir = '~/.vim/squint/'
+
