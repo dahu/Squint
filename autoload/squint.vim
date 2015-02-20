@@ -31,7 +31,7 @@ function! squint#info()
   let info.name = 'squint'
   let info.version = 0.1
   let info.description = 'Focus your attention where it''s needed.'
-  let info.dependencies = [{'name': 'vimple', 'version': 0.9}]
+  let info.dependencies = []
   return info
 endfunction
 
@@ -88,27 +88,33 @@ function! squint#zoom_out()
 endfunction
 
 function! squint#show(lines)
-  let parent = bufnr('%')
+  let parent     = bufnr('%')
   let parent_alt = bufnr('#')
-  let dir = expand('%:p:h')
-  let name = expand('%:p:t:r')
-  let ext = expand('%:e')
-  let i = 1
-  let newname = dir . '/.squint_' . i . '_'. name . ext
-  " XXX is newname persistant? how long should it exists? What happens with
-  " nested zoom-in?
+  let name       = expand('%:p:t:r')
+  let ext        = expand('%:e')
+  let i          = 1
+
+  if exists('g:squint_dir')
+    let dir = g:squint_dir
+    let prefix = ''
+  else
+    let dir = expand('%:p:h')
+    let prefix     = '.squint_'
+  endif
+
+  let newname = dir . '/' . prefix . join([i, s:squints, name, ext], '_')
   while !empty(glob(newname))
     let i += 1
-    let newname = substitute(newname, '/\.squint_\d\+', i, '')
+    let newname = substitute(newname, '\d\+\ze_\d\+_\f', i, '')
   endwhile
+
   exec 'hide edit ' . newname
   call setline(1, a:lines)
-  let b:squint_parent = parent
+  let b:squint_parent     = parent
   let b:squint_parent_alt = parent_alt
 endfunction
 
 function! squint#close()
-  " XXX Do we want to keep this file?
   write
   exec 'buffer ' . b:squint_parent
   bwipe #
