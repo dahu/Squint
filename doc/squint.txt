@@ -7,6 +7,8 @@
 Help on using squint                                              *squint*
 
 1. Introduction				|squint-intro|
+2. Vimoutliner Support			|squint-vimoutliner|
+3. Configuration			|squint-configuration|
 
 ==============================================================================
  1. INTRODUCTION                                            *squint-intro*
@@ -14,20 +16,68 @@ Help on using squint                                              *squint*
 Squint lets you focus on important work without distractions by zooming in on
 the current function or visual selection.
 
-Use `<leader>z` to zoom the current |[[| to |][| range or visual selection.
-Use `<leader>Z` to zoom back out again.
+Command Line~
 
-The `<leader>z` trigger is configurable through `<plug>squint_zoom_in`.
+Use `:[range]Squint` to zoom in on a range of lines.
+By default, the range is the current line.
+This supports visual line ranges with the |'<|,|'>| marks.
+
+Normal Mode Commands~
+
+Use `<leader>z` to zoom the current |[[| to |][| range or visual selection.
+If you want to map this differently, use `<plug>squint_zoom_in`
+
+Use `<leader>Z` to zoom back out again.
+If you want to map this differently, use `<plug>squint_zoom_out`
+
+<plug>squint_zoom_in~
+
+The normal mode `<plug>squint_zoom_in` can be mapped to suit the logical
+default chunk of your current filetype. By default, this uses the range
+bounded by |[[| , |][| which is the current function in C (and through
+filetype plugins, many other languages too). In |vim-asciidoc| for instance,
+this is the current Heading-bounded section. If you don't want |[[| ,|][| to
+be your default chunk range then nmap `<plug>squint_zoom_in` to operate on the
+desired range.
+
+Consider, for example, the arguably improbable desire to be able to zoom in on
+a range that is 10 lines around the cursor. Adding the following map to your
+|$MYVIMRC| will accomplish that:
+>
+  nmap <plug>squint_zoom_in :-10,+10 Squint\|norm! 51%<cr>
+<
+
+NOTE: |vim-asciidoc| is available from https://github.com/dahu/vim-asciidoc
+
 
 ==============================================================================
- 2. CONFIGURATION                                   *squint-configuration*
+ 2. VIMOUTLINER SUPPORT                               *squint-vimoutliner*
+
+Unlike the built-in hoisting plugin for Vimoutliner, Squint allows hoisting
+from within hoists.
+
+Use `<localleader>h` to hoist the current subtopics.
+Use `<localleader>Z` to de-hoist the current buffer back into its source.
+
+NOTE:	Vim's default <localleader> is `\`
+	Vimoutliner's default recommended <localleader> is `,,`
+        To see your current <localleader>, type >
+          :echo maplocalleader
+<
+
+If you don't want to use <localleader>h and <localleader>Z for the hoist and
+de-hoist operations, they can be configured through `<plug>squint_votl_hoist`
+and `<plug>squint_votl_dehoist` respectively.
+
+==============================================================================
+ 3. CONFIGURATION                                   *squint-configuration*
 
 |'squint_dir'|		Directory in which to store all squint tempfiles.
 
 ------------------------------------------------------------------------------
-                                                      *'squint_use_split'*
-Values: string                                                               ~
-Default: unset                                                               ~
+                                                            *'squint_dir'*
+Value:   string                                                          ~
+Default: unset                                                           ~
 
 By default, Squint saves tempfiles in the same directory as the file from
 which you zoomed. If you want to store all of your squints in one directory

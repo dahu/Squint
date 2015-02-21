@@ -51,7 +51,20 @@ function! squint#save_pos(first_line, last_line)
   return squint_number
 endfunction
 
-function! squint#zoom_in()
+function! squint#range_zoom_in() range
+  call squint#show(
+        \  getline(a:firstline, a:lastline)
+        \, squint#save_pos(a:firstline, a:lastline)
+        \)
+endfunction
+
+function! squint#votl_hoist()
+  let first_line = FindParent(line('.'))
+  let last_line  = FindLastChild(first_line)
+  exe first_line . ',' . last_line . 'call squint#range_zoom_in()'
+endfunction
+
+function! squint#visual_zoom_in()
   let sel_save     = &selection
   let &selection   = "inclusive"
   let reg_save     = @@
@@ -62,7 +75,11 @@ function! squint#zoom_in()
     silent exe "normal! gvy"
   endif
 
-  call squint#show(split(@@, "\n", 1))
+  let data = split(@@, "\n", 1)[:-2]
+  call squint#show(
+        \  data
+        \, squint#save_pos(getpos("'[")[1], getpos("']")[1])
+        \)
 
   let &selection = sel_save
   let @@ = reg_save
@@ -89,7 +106,7 @@ function! squint#zoom_out()
   endif
 endfunction
 
-function! squint#show(lines)
+function! squint#show(lines, squint_number)
   let parent      = bufnr('%')
   let parent_name = bufname('%')
   let parent_alt  = bufnr('#')
@@ -97,7 +114,6 @@ function! squint#show(lines)
   let ext         = expand('%:e')
   let i           = 1
   let ft          = &ft
-  let number      = squint#save_pos(getpos("'[")[1], getpos("']")[1])
 
   if exists('g:squint_dir')
     let dir = g:squint_dir
@@ -107,7 +123,7 @@ function! squint#show(lines)
     let prefix     = '.squint_'
   endif
 
-  let newname = dir . '/' . prefix . join([i, number, name, ext], '_')
+  let newname = dir . '/' . prefix . join([i, a:squint_number, name, ext], '_')
   while !empty(glob(newname))
     let i += 1
     let newname = substitute(newname, '\d\+\ze_\d\+_\f', i, '')
@@ -115,12 +131,10 @@ function! squint#show(lines)
 
   exec 'hide edit ' . newname
   call setline(1, a:lines)
-  $ g/^$/delete
-  1
   let &ft = ft
   let b:squint_parent     = parent
   let b:squint_parent_alt = parent_alt
-  let b:squint_number     = number
+  let b:squint_number     = a:squint_number
 endfunction
 
 function! squint#close()

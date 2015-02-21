@@ -24,17 +24,14 @@ if exists("g:loaded_squint")
 endif
 let g:loaded_squint = 1
 
-" Options: {{{1
-
-if ! exists('g:squint_use_split')
-  let g:squint_use_split = 0
-endif
-
 " Maps: {{{1
 
-nmap <plug>squint_zoom_in  [[V][:<c-u>call squint#zoom_in()<cr>
-xmap <plug>squint_zoom_in  :<c-u>call squint#zoom_in()<cr>
-nmap <plug>squint_zoom_out :<c-u>call squint#zoom_out()<cr>
+if mapcheck('<plug>squint_zoom_in', 'n') == ''
+  nmap <plug>squint_zoom_in  [[V][:<c-u>call squint#visual_zoom_in()<cr>
+endif
+
+xmap <plug>squint_zoom_in       :<c-u>call squint#visual_zoom_in()<cr>
+nmap <plug>squint_zoom_out      :<c-u>call squint#zoom_out()<cr>
 
 if !hasmapto('<plug>squint_zoom_in', 'n')
   nmap <unique><silent> <Leader>z <plug>squint_zoom_in
@@ -47,6 +44,22 @@ endif
 if !hasmapto('<plug>squint_zoom_out', 'n')
   nmap <unique><silent> <Leader>Z <plug>squint_zoom_out
 endif
+
+" Support Vimoutliner
+nmap <plug>squint_votl_hoist    :<c-u>call squint#votl_hoist()<cr>
+nmap <plug>squint_votl_dehoist  <plug>squint_zoom_out
+
+if !hasmapto('<plug>squint_votl_hoist', 'n')
+  nmap <unique><silent> <localleader>h <plug>squint_votl_hoist
+endif
+
+if !hasmapto('<plug>squint_votl_dehoist', 'n')
+  nmap <unique><silent> <localleader>Z <plug>squint_votl_dehoist
+endif
+
+" Commands: {{{1
+
+command! -bar -nargs=0 -range Squint <line1>,<line2>call squint#range_zoom_in()
 
 " Teardown: {{{1
 
