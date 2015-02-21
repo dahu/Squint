@@ -27,7 +27,8 @@ Normal Mode Commands
 * Use `<leader>Z` to zoom back out again.
 ** If you want to map this differently, use `<plug>squint_zoom_out`
 
-.<plug>squint_zoom_in
+<plug>squint_zoom_in
+^^^^^^^^^^^^^^^^^^^^
 
 The normal mode `<plug>squint_zoom_in` can be mapped to suit the
 logical default chunk of your current filetype. By default, this uses
